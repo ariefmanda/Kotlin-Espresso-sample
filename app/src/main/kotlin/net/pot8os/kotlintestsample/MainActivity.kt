@@ -17,11 +17,11 @@ class MainActivity : AppCompatActivity() {
         ADD, SUB, MULTI, DIV, NONE;
 
         fun calc(arg1: BigDecimal, arg2: BigDecimal): BigDecimal = when (this) {
-            Figure.ADD -> arg1.plus(arg2)
-            Figure.SUB -> arg1.minus(arg2)
-            Figure.MULTI -> arg1.multiply(arg2)
-            Figure.DIV -> arg1.divide(arg2, 8, BigDecimal.ROUND_HALF_UP)
-            Figure.NONE -> arg2
+            ADD -> arg1.plus(arg2)
+            SUB -> arg1.minus(arg2)
+            MULTI -> arg1.multiply(arg2)
+            DIV -> arg1.divide(arg2, 8, BigDecimal.ROUND_HALF_UP)
+            NONE -> arg2
         }
     }
 
@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity() {
     private var field = BigDecimal.ZERO
     private var stack = BigDecimal.ZERO
     private var currentFigure = Figure.NONE
+    private var bolean = true
+    private var sample = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +49,15 @@ class MainActivity : AppCompatActivity() {
                         field = field
                                 .multiply(BigDecimal(10))
                                 .plus(BigDecimal(button.tag.toString().toInt()))
-                        binding.field.setText(formatter.format(field))
+                        if (bolean) {
+                            sample = sample+button.tag.toString()
+                            binding.field.setText(sample)
+                        } else {
+                            binding.history.setText("$sample")
+                            field = BigDecimal(button.tag.toString().toInt())
+                            sample = button.tag.toString()
+                            binding.field.setText(sample)
+                        }
                     }
         }
 
@@ -59,8 +69,14 @@ class MainActivity : AppCompatActivity() {
                         currentFigure = Figure.valueOf(button.tag.toString())
                         stack = if (currentFigure != Figure.NONE) field else BigDecimal.ZERO
                         field = BigDecimal.ZERO
+                        bolean = true
                         if (stack == BigDecimal.ZERO) {
+                            sample = ""
                             binding.field.setText(formatter.format(field))
+                            binding.history.setText(sample)
+                        }else{
+                            sample = sample + (button.text.toString())
+                            binding.field.setText(sample)
                         }
                     }
         }
@@ -68,7 +84,10 @@ class MainActivity : AppCompatActivity() {
         RxView.clicks(binding.buttonCalc)
                 .subscribe {
                     field = currentFigure.calc(stack, field)
-                    binding.field.setText(formatter.format(field))
+                    sample = field.toString()
+                    bolean = false
+                    stack = BigDecimal.ONE
+                    binding.field.setText(sample)
                 }
     }
 }
