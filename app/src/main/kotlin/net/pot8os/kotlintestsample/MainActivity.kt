@@ -14,7 +14,7 @@ import java.text.DecimalFormat
 class MainActivity : AppCompatActivity() {
 
     enum class Figure {
-        ADD, SUB, MULTI, DIV, NONE;
+        ADD, SUB, MULTI, DIV, NONE; //constanta class figure
 
         fun calc(arg1: BigDecimal, arg2: BigDecimal): BigDecimal = when (this) {
             ADD -> arg1.plus(arg2)
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                             sample = sample+button.tag.toString()
                             binding.field.setText(sample)
                         } else {
-                            binding.history.setText("$sample")
+                            binding.history.setText(sample)
                             field = BigDecimal(button.tag.toString().toInt())
                             sample = button.tag.toString()
                             binding.field.setText(sample)
@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                         stack = if (currentFigure != Figure.NONE) field else BigDecimal.ZERO
                         field = BigDecimal.ZERO
                         bolean = true
+                        println(currentFigure)
                         if (stack == BigDecimal.ZERO) {
                             sample = ""
                             binding.field.setText(formatter.format(field))
